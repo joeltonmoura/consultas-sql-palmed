@@ -1,0 +1,69 @@
+SELECT PCCLIENT.CODCLI,
+       PCCLIENT.CLIENTE,
+       PCCLIENT.ESTENT,
+       PCCLIENT.CGCENT,
+       PCCLIENT.TELENT,
+       PCCIDADE.NOMECIDADE,
+       (SELECT PCUSUARI.CODFILIAL FROM  PCUSUARI WHERE  PCUSUARI.codusur = pcclient.codusur1) CODIGOFILIAL,
+       max(pcpedc.data) DTULTIMACOMPRA,
+       case when EXTRACT(month FROM max(pcpedc.data)) = EXTRACT(month FROM max(sysdate)) then 'POSITIVADO NO MES'
+        when EXTRACT(month FROM max(pcpedc.data)) < EXTRACT(month FROM max(sysdate)) then 'NÃO POSITIVADO'
+        else 'SEM COMPRAS'
+        end  POSITIVADONOMES ,
+       COUNT(PCPEDC.NUMPED) QTDEPED
+       
+  FROM PCPEDC,
+       PCCLIENT,
+       PCCIDADE
+ WHERE PCPEDC.CODCLI(+) = PCCLIENT.CODCLI
+   AND TRUNC(PCPEDC.DATA(+)) >= '01-MAY-2020'
+   AND PCCIDADE.CODCIDADE = PCCLIENT.CODCIDADE
+   AND PCPEDC.TIPOFV(+) = 'PE'
+   AND PCCLIENT.CODCLI IN ( 3214
+,    37841
+,    21887
+,    1013
+,    19413
+,    18317
+,    145
+,    22331
+,    20038
+,    21055
+,    22541
+,    1004
+,    11714
+,    9858
+,    22518
+,    5209
+,    16580
+,    16837
+,    63316
+,    13780
+,    11505
+,    17750
+,    9988
+,    18716
+,    1976
+,    20483
+,    20079
+,    1291
+,    10160
+,    38762
+,    63428
+,    64194
+,    64914
+,    73032
+,    1045 
+)
+GROUP BY PCCLIENT.CODCLI,
+       PCCLIENT.CLIENTE,
+       PCCLIENT.ESTENT,
+       PCCLIENT.CGCENT,
+       PCCLIENT.TELENT,
+       PCPEDC.CODFILIAL,
+       PCCIDADE.NOMECIDADE,
+       pcclient.codusur1
+
+
+
+
